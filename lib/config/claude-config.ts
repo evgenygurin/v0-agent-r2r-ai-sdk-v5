@@ -1,5 +1,9 @@
 import { type ClaudeCodeConfig } from '@/lib/types/claude-code'
 
+// Claude Code SDK Configuration
+// NOTE: API key is OPTIONAL when using Claude MAX subscription
+// The SDK automatically uses Claude Code CLI authentication
+// Only set ANTHROPIC_API_KEY if you want to use direct API access instead
 export const claudeConfig = {
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 }

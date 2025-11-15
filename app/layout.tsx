@@ -7,6 +7,9 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+// Force dynamic rendering for all pages to prevent static generation errors
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Claude Code + R2R Integration',
   description: 'AI Agent Platform powered by Claude Code SDK and R2R',

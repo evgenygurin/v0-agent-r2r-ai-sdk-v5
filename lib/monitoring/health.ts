@@ -41,12 +41,12 @@ export async function checkR2RHealth(): Promise<HealthStatus> {
 
 export async function checkClaudeCodeHealth(): Promise<HealthStatus> {
   const startTime = Date.now()
-  
+
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      throw new Error('ANTHROPIC_API_KEY not configured')
-    }
-    
+    // Claude Code SDK uses local CLI with MAX subscription
+    // No API key needed - authentication is handled by Claude Code CLI
+    // If API key is provided, it will be used; otherwise, falls back to CLI auth
+
     return {
       service: 'claude-code',
       status: 'healthy',
