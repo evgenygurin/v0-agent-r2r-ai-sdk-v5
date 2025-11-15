@@ -1,9 +1,13 @@
 name: Deploy to Vercel
 
+# NOTE: Vercel automatically deploys via Git Integration on every push
+# This workflow is DISABLED to avoid redundant deployments
+# To enable: add VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID to GitHub Secrets
+# Then uncomment the push trigger below
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  # push:
+  #   branches: [main]
+  workflow_dispatch: # Manual trigger only
 
 jobs:
   deploy:
