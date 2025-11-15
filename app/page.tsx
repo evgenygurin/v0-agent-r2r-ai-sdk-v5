@@ -11,30 +11,17 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('chat')
 
   return (
-    <main className="flex min-h-screen flex-col bg-background">
+    <main className="flex h-full flex-col bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <MessageSquare className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-foreground">Claude Code + R2R</h1>
-              <p className="text-xs text-muted-foreground">AI Agent Platform</p>
-            </div>
+        <div className="flex h-16 items-center px-6">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">Chat</h1>
+            <p className="text-xs text-muted-foreground">Claude Code + R2R Agent</p>
           </div>
-          <nav className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
-              Docs
-            </Button>
-            <Button variant="ghost" size="sm">
-              GitHub
-            </Button>
-          </nav>
         </div>
       </header>
 
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
           <div className="border-b border-border bg-card">
             <TabsList className="mx-auto h-12 max-w-7xl bg-transparent px-4">
