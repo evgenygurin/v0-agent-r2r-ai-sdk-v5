@@ -1,0 +1,41 @@
+name: Linear Integration
+
+on:
+  pull_request:
+    types: [opened, closed, reopened]
+  issues:
+    types: [opened, closed, reopened]
+
+jobs:
+  update_linear_issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update Linear Issue on PR/Issue Event
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_WEBHOOK_SECRET: ${{ secrets.LINEAR_WEBHOOK_SECRET }}
+        run: |
+          # This is a placeholder for Linear integration logic.
+          # In a real scenario, you would use a Linear GitHub Action or a custom script
+          # to interact with the Linear API based on GitHub events.
+
+          echo "GitHub event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "Pull Request Title: ${{ github.event.pull_request.title }}"
+            echo "Pull Request URL: ${{ github.event.pull_request.html_url }}"
+            # Example: Find Linear issue ID in PR title/body and update its status
+            # linear-cli update-issue --id <issue-id> --status "In Progress"
+          elif [ "${{ github.event_name }}" == "issues" ]; then
+            echo "Issue Title: ${{ github.event.issue.title }}"
+            echo "Issue URL: ${{ github.event.issue.html_url }}"
+            # Example: Create a new Linear issue or update an existing one
+            # linear-cli create-issue --title "New GitHub Issue: ${{ github.event.issue.title }}"
+          fi

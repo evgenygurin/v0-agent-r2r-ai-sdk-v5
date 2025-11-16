@@ -1,0 +1,28 @@
+name: Sentry Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_sentry_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to get commit history for suspect commit detection
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to get all commit history
+
+      - name: Create Sentry Release
+        uses: getsentry/action-release@v3
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
+          version: ${{ github.sha }} # Use commit SHA as release version
+          sourcemaps: "./.next/static/chunks" # Adjust path to your compiled assets

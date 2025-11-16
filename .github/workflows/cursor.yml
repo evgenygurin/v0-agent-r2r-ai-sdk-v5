@@ -1,0 +1,39 @@
+name: Cursor Integration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  cursor_agent:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI
+        uses: cli/cli@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Cursor Agent
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          # Example: Run Cursor agent with full access
+          # This agent can commit, push, and comment on PRs
+          # cursor-agent -p "You have full access to git, GitHub CLI, and PR operations. Handle the entire docs update workflow including commits, pushes, and PR comments."
+
+          # Example: Run Cursor agent with restricted access (only file modifications)
+          # if contains(github.event.comment.body, '@cursor update-docs'); then
+          #   echo "Triggering Cursor agent for documentation update..."
+          #   cursor-agent -p "IMPORTANT: Do NOT create branches, commit, push, or post PR comments. Update documentation files only."
+          #   git commit -m "docs: update for PR"
+          #   gh pr comment ${{ github.event.pull_request.number }} --body "Docs updated by Cursor."
+          # fi

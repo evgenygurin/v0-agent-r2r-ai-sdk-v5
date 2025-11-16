@@ -1,0 +1,33 @@
+name: Codegen.com Integration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  codegen_agent:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Codegen.com Agent
+        env:
+          CODEGEN_API_KEY: ${{ secrets.CODEGEN_API_KEY }}
+          CODEGEN_ORG_ID: ${{ secrets.CODEGEN_ORG_ID }}
+          CODEGEN_PROJECT_ID: ${{ secrets.CODEGEN_PROJECT_ID }}
+        run: |
+          # Example: Trigger Codegen.com agent on PR comment with "@codegen fix"
+          # Replace with actual Codegen.com CLI command or API call
+          if contains(github.event.comment.body, '@codegen fix'); then
+            echo "Triggering Codegen.com agent for auto-fix..."
+            # codegen-cli fix --pr ${{ github.event.pull_request.number }}
+          fi
+          # Example: Run code review on PR
+          # codegen-cli review --pr ${{ github.event.pull_request.number }}
