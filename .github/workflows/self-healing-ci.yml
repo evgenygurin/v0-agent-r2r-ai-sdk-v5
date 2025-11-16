@@ -1,0 +1,103 @@
+name: Self-Healing CI/CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  push:
+    branches: [main, develop]
+
+jobs:
+  analyze-failure:
+    name: Analyze CI Failure
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install codegen requests python-dotenv
+
+      - name: Analyze and Auto-Fix
+        env:
+          CODEGEN_ORG_ID: ${{ secrets.CODEGEN_ORG_ID }}
+          CODEGEN_API_KEY: ${{ secrets.CODEGEN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          REPO: ${{ github.repository }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: python .github/scripts/self_healing.py
+
+      - name: Create Fix PR if needed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "fix: auto-fix CI failures"
+          title: "🤖 Auto-fix: CI Failure Resolution"
+          body: |
+            ## Auto-Generated Fix
+
+            This PR was automatically created to fix CI failures detected in workflow run #${{ github.event.workflow_run.id }}.
+
+            **Analysis:**
+            - Workflow: ${{ github.event.workflow_run.name }}
+            - Status: ${{ github.event.workflow_run.conclusion }}
+            - Triggered by: ${{ github.event.workflow_run.triggering_actor.login }}
+
+            **Actions Taken:**
+            - Analyzed failure logs
+            - Generated fixes using Codegen AI
+            - Created Linear issue for tracking
+
+            Please review the changes before merging.
+
+            🤖 Generated with Codegen Self-Healing System
+          branch: auto-fix/${{ github.event.workflow_run.id }}
+          labels: |
+            auto-fix
+            ci-failure
+          reviewers: |
+            ${{ github.event.workflow_run.triggering_actor.login }}
+
+  health-check:
+    name: System Health Check
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Health Checks
+        env:
+          R2R_BASE_URL: ${{ secrets.R2R_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          npm ci
+          node .github/scripts/health-check.js
+
+      - name: Report to Sentry
+        if: failure()
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: ci
+          ignore_missing: true
+          ignore_empty: true

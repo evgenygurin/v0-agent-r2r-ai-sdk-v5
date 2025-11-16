@@ -1,0 +1,69 @@
+name: Codegen Auto Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, develop]
+
+jobs:
+  codegen-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    # Skip for dependabot and drafts
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      github.event.pull_request.draft == false &&
+      !contains(github.event.pull_request.labels.*.name, 'skip-review')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Codegen SDK
+        run: |
+          pip install codegen requests
+
+      - name: Run Codegen AI Review
+        env:
+          CODEGEN_ORG_ID: ${{ secrets.CODEGEN_ORG_ID }}
+          CODEGEN_API_KEY: ${{ secrets.CODEGEN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python .github/scripts/codegen_review.py
+
+      - name: Comment PR Status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const reviewResult = fs.existsSync('/tmp/codegen_review.json')
+              ? JSON.parse(fs.readFileSync('/tmp/codegen_review.json', 'utf8'))
+              : { status: 'error', message: 'Review failed to complete' };
+
+            const comment = `## 🤖 Codegen AI Review
+
+            **Status**: ${reviewResult.status}
+
+            ${reviewResult.message || 'Review completed'}
+
+            ${reviewResult.web_url ? `[View detailed results](${reviewResult.web_url})` : ''}
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });

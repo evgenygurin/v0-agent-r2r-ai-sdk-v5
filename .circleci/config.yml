@@ -87,6 +87,29 @@ jobs:
             vercel build --prod --token=${VERCEL_TOKEN}
             vercel deploy --prebuilt --prod --token=${VERCEL_TOKEN}
 
+  auto-fix-failures:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup Python for Auto-fix
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3 python3-pip
+            pip3 install codegen requests
+      - run:
+          name: Trigger Auto-fix on Failure
+          command: |
+            python3 .github/scripts/circleci_auto_fix.py
+          environment:
+            CODEGEN_ORG_ID: ${CODEGEN_ORG_ID}
+            CODEGEN_API_KEY: ${CODEGEN_API_KEY}
+            CIRCLE_BUILD_NUM: ${CIRCLE_BUILD_NUM}
+            CIRCLE_PROJECT_REPONAME: ${CIRCLE_PROJECT_REPONAME}
+          when: on_fail
+
 workflows:
   version: 2
   build-test-deploy:
@@ -101,6 +124,14 @@ workflows:
       - security-scan:
           requires:
             - install-and-cache
+      - auto-fix-failures:
+          requires:
+            - lint
+            - build
+            - security-scan
+          filters:
+            branches:
+              only: [main, develop]
       - deploy-production:
           requires:
             - lint
