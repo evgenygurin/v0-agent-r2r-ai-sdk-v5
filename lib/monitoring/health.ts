@@ -10,18 +10,24 @@ export interface HealthStatus {
 
 export async function checkR2RHealth(): Promise<HealthStatus> {
   const startTime = Date.now()
-  
+
   try {
-    const response = await fetch(
-      `${process.env.R2R_BASE_URL}/v3/health`,
-      { 
-        signal: AbortSignal.timeout(5000),
-        cache: 'no-store',
-      }
-    )
-    
+    const baseUrl = process.env.R2R_BASE_URL || process.env.NEXT_PUBLIC_R2R_BASE_URL || 'http://136.119.36.216:7272'
+
+    // Validate URL before fetching
+    if (!baseUrl) {
+      throw new Error('R2R_BASE_URL not configured')
+    }
+
+    const url = new URL('/v3/health', baseUrl)
+
+    const response = await fetch(url.toString(), {
+      signal: AbortSignal.timeout(5000),
+      cache: 'no-store',
+    })
+
     const responseTime = Date.now() - startTime
-    
+
     return {
       service: 'r2r',
       status: response.ok ? 'healthy' : 'degraded',
