@@ -98,7 +98,8 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install -y python3 python3-pip
-            pip3 install codegen requests
+            pip3 install uv
+            uv pip install -r .github/scripts/requirements.txt
       - run:
           name: Trigger Auto-fix on Failure
           command: |

@@ -1,4 +1,4 @@
-import { type R2RAgentConfig } from '@/lib/types/r2r'
+import { type R2RAgentConfig } from '../types/r2r'
 
 export const r2rConfig = {
   baseUrl: process.env.R2R_BASE_URL || 'http://136.119.36.216:7272',

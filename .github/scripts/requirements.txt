@@ -1,0 +1,3 @@
+codegen
+requests
+python-dotenv

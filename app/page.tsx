@@ -6,12 +6,14 @@ import { MonitoringDashboard } from '@/components/monitoring-dashboard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Activity, MessageSquare, Settings } from 'lucide-react'
+import BackgroundPaths from '@/components/background-paths'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('chat')
 
   return (
-    <main className="flex h-full flex-col bg-background">
+    <main className="relative flex h-full flex-col bg-background">
+      <BackgroundPaths />
       <header className="border-b border-border bg-card">
         <div className="flex h-16 items-center px-6">
           <div>

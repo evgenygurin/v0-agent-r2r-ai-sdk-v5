@@ -26,9 +26,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Codegen SDK
+      - name: Install dependencies with uv
         run: |
-          pip install codegen requests
+          pip install uv
+          uv pip install -r .github/scripts/requirements.txt
 
       - name: Run Codegen AI Review
         env:

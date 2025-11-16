@@ -43,14 +43,13 @@ export default function KnowledgeGraphPage() {
 
     setIsLoading(true)
     try {
-      const [entitiesResult, relationshipsResult, communitiesResult] = await Promise.all([
+      const [entitiesResult, communitiesResult] = await Promise.all([
         listEntities({ collectionId: selectedCollection, limit: 100 }),
-        listRelationships({ collectionId: selectedCollection, limit: 100 }),
         listCommunities({ collectionId: selectedCollection, level: 0, limit: 50 }),
       ])
 
       setEntities(entitiesResult.results || [])
-      setRelationships(relationshipsResult.results || [])
+      setRelationships([]) // Clear relationships, to be loaded on entity click
       setCommunities(communitiesResult.results || [])
     } catch (error) {
       console.error('[v0] Failed to load graph data:', error)

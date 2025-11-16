@@ -1,7 +1,7 @@
 // R2R Client wrapper with authentication and error handling
 
-import { r2rConfig } from '@/lib/config/r2r-config'
-import type { R2RAgentConfig, R2RSearchSettings, R2RMessage } from '@/lib/types/r2r'
+import { r2rConfig } from '../config/r2r-config'
+import type { R2RAgentConfig, R2RSearchSettings, R2RMessage } from '../types/r2r'
 
 export class R2RClient {
   private baseUrl: string

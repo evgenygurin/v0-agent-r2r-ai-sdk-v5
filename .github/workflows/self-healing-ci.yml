@@ -22,9 +22,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install dependencies with uv
         run: |
-          pip install codegen requests python-dotenv
+          pip install uv
+          uv pip install -r .github/scripts/requirements.txt
 
       - name: Analyze and Auto-Fix
         env:
