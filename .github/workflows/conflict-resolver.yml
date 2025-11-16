@@ -1,0 +1,93 @@
+name: Conflict Resolver with Codegen
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_target: # Use pull_request_target for access to secrets from the base repository
+    types: [opened, synchronize, reopened]
+
+jobs:
+  resolve_conflicts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # For resolving conflicts and pushing changes
+      pull-requests: write # For commenting on PRs and updating status
+      issues: write # For commenting on issues (if Codegen uses issues for communication)
+    steps:
+      - name: Checkout Pull Request Branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }} # Use GITHUB_TOKEN for head branch
+
+      - name: Checkout Base Branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          path: base_branch
+          token: ${{ secrets.GITHUB_TOKEN }} # Use GITHUB_TOKEN for base branch
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Attempt Merge and Detect Conflicts
+        id: merge_check
+        run: |
+          git merge --no-commit --no-ff base_branch || echo "MERGE_CONFLICT=true" >> $GITHUB_ENV
+        continue-on-error: true # Allow step to fail if conflicts exist
+
+      - name: Handle Merge Conflicts with Codegen
+        if: env.MERGE_CONFLICT == 'true'
+        env:
+          CODEGEN_API_KEY: ${{ secrets.CODEGEN_API_KEY }}
+          CODEGEN_ORG_ID: ${{ secrets.CODEGEN_ORG_ID }}
+          CODEGEN_PROJECT_ID: ${{ secrets.CODEGEN_PROJECT_ID }}
+        run: |
+          echo "Conflicts detected. Invoking Codegen agent..."
+          # Placeholder for Codegen agent CLI/API call
+          # This command should:
+          # 1. Analyze the conflicting files (git diff --name-only --diff-filter=U)
+          # 2. Attempt to resolve them
+          # 3. If resolved, stage the changes and commit
+          # 4. If not resolved, comment on the PR and potentially assign a human
+          
+          # Example: List conflicting files
+          CONFLICTING_FILES=$(git diff --name-only --diff-filter=U)
+          echo "Conflicting files: $CONFLICTING_FILES"
+
+          # Placeholder for Codegen CLI command to resolve conflicts
+          # codegen-cli resolve-conflicts \
+          #   --pr-number ${{ github.event.pull_request.number }} \
+          #   --repo ${{ github.repository }} \
+          #   --files "$CONFLICTING_FILES" \
+          #   --api-key "$CODEGEN_API_KEY" \
+          #   --org-id "$CODEGEN_ORG_ID" \
+          #   --project-id "$CODEGEN_PROJECT_ID" \
+          #   --comment-on-pr # Codegen agent should handle PR communication
+
+          # For demonstration, let's assume Codegen resolves and commits
+          # In a real scenario, Codegen would push the resolution commit
+          # git add .
+          # git commit -m "fix(conflict): Resolved merge conflicts with Codegen agent"
+          # git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+          # If Codegen cannot resolve, it should comment on the PR
+          # gh pr comment ${{ github.event.pull_request.number }} --body "Codegen agent attempted to resolve conflicts but requires human intervention. Please review the conflicting files."
+
+      - name: Notify on Successful Merge (if no conflicts or resolved)
+        if: success() && env.MERGE_CONFLICT != 'true'
+        run: |
+          echo "No conflicts detected or conflicts were resolved. PR is ready to merge."
+          # Optional: Add a comment to the PR
+          # gh pr comment ${{ github.event.pull_request.number }} --body "No merge conflicts detected. This PR is ready for review and merge."
+
+      - name: Notify on Unresolved Conflicts
+        if: failure() && env.MERGE_CONFLICT == 'true'
+        run: |
+          echo "Merge conflicts remain unresolved after Codegen attempt. Human intervention required."
+          # Optional: Add a comment to the PR
+          # gh pr comment ${{ github.event.pull_request.number }} --body "Codegen agent could not fully resolve merge conflicts. Human intervention is required. Please check the conflicting files."
