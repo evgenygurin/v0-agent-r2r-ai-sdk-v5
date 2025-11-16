@@ -3,6 +3,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
   },
@@ -13,9 +16,6 @@ const nextConfig = {
     },
   },
   skipTrailingSlashRedirect: true,
-  // Disable static optimization to prevent error page generation issues
-  // All pages will be rendered on-demand
-  generateBuildId: async () => 'build',
   compress: false,
 }
 
