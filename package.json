@@ -33,7 +33,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/postcss": "^4.1.17",
-    "@vercel/analytics": "latest",
+    "@vercel/analytics": "^1.5.0",
     "ai": "latest",
     "ai-sdk-provider-claude-code": "latest",
     "class-variance-authority": "^0.7.1",

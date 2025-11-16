@@ -1,49 +1,102 @@
+import { createRoomContext } from "@liveblocks/react";
+
 // Define Liveblocks types for your application
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
-declare global {
-  interface Liveblocks {
-    // Each user's Presence, for useMyPresence, useOthers, etc.
-    Presence: {
-      // Example, real-time cursor coordinates
-      // cursor: { x: number; y: number };
-    };
+type Presence = {
+  // Example, real-time cursor coordinates
+  // cursor: { x: number; y: number };
+};
 
-    // The Storage tree for the room, for useMutation, useStorage, etc.
-    Storage: {
-      // Example, a conflict-free list
-      // animals: LiveList<string>;
-    };
+type Storage = {
+  // Example, a conflict-free list
+  // animals: LiveList<string>;
+};
 
-    // Custom user info set when authenticating with a secret key
-    UserMeta: {
-      id: string;
-      info: {
-        // Example properties, for useSelf, useUser, useOthers, etc.
-        // name: string;
-        // avatar: string;
-      };
-    };
+type UserMeta = {
+  id: string;
+  info: {
+    // Example properties, for useSelf, useUser, useOthers, etc.
+    // name: string;
+    // avatar: string;
+  };
+};
 
-    // Custom events, for useBroadcastEvent, useEventListener
-    RoomEvent: {};
-      // Example has two events, using a union
-      // | { type: "PLAY" } 
-      // | { type: "REACTION"; emoji: "🔥" };
+type RoomEvent = {};
+  // Example has two events, using a union
+  // | { type: "PLAY" }
+  // | { type: "REACTION"; emoji: "🔥" };
 
-    // Custom metadata set on threads, for useThreads, useCreateThread, etc.
-    ThreadMetadata: {
-      // Example, attaching coordinates to a thread
-      // x: number;
-      // y: number;
-    };
+type ThreadMetadata = {
+  // Example, attaching coordinates to a thread
+  // x: number;
+  // y: number;
+};
 
-    // Custom room info set with resolveRoomsInfo, for useRoomInfo
-    RoomInfo: {
-      // Example, rooms with a title and url
-      // title: string;
-      // url: string;
-    };
+type RoomInfo = {
+  // Example, rooms with a title and url
+  // title: string;
+  // url: string;
+};
+
+export const {
+  RoomProvider,
+  useMyPresence,
+  useOthers,
+  useUpdateMyPresence,
+  useStorage,
+  useMutation,
+  useSelf,
+  useRoom,
+  useActiveUsers,
+  useReadonlyMyPresence,
+  useReadonlyOthers,
+  useReadonlySelf,
+  useReadonlyRoom,
+  useReadonlyActiveUsers,
+  useReadonlyStorage,
+  useReadonlyMutation,
+  useBroadcastEvent,
+  useEventListener,
+  useErrorListener,
+  useStatus,
+  useLostConnectionListener,
+  useDisconnectListener,
+  useConnectListener,
+  useUser,
+  useThreads,
+  useCreateThread,
+  useEditThreadMetadata,
+  useDeleteThread,
+  useAddReaction,
+  useRemoveReaction,
+  useEditComment,
+  useDeleteComment,
+  useRoomInfo,
+} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata, RoomInfo>(
+  {
+    async resolveUsers({ userIds }) {
+      // Used for fetching user info and avatars in the UI
+      // for example, a user's name and avatar url
+      return userIds.map((id) => ({
+        id,
+        info: {
+          name: `User ${id}`,
+          avatar: `https://liveblocks.io/avatars/avatar-${Math.floor(
+            Math.random() * 30
+          )}.png`,
+        },
+      }));
+    },
+    async resolveRoomInfo({ roomIds }) {
+      // Used for fetching room info in the UI
+      // for example, a room's title and url
+      return roomIds.map((id) => ({
+        id,
+        info: {
+          title: `Room ${id}`,
+          url: `/rooms/${id}`,
+        },
+      }));
+    },
   }
-}
-
-export {};
+);
