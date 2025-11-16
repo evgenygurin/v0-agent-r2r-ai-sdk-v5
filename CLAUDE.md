@@ -5,25 +5,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 🎯 Project Overview
 
 Next.js 15 application integrating:
+
 - **Claude Code SDK** via Vercel AI SDK v5 (uses Claude Pro/Max subscription, no API costs)
 - **R2R Agent** with hybrid RAG, knowledge graphs, and GraphRAG
-- **Google Cloud R2R Deployment**: http://136.119.36.216:7272
+- **Google Cloud R2R Deployment**: <http://136.119.36.216:7272>
 
 ### Key Architecture Decisions
 
 **Why Vercel AI SDK v5 + Claude Code?**
+
 - Unified streaming interface with automatic tool serialization
 - Session management for multi-turn conversations
 - Direct Claude Pro/Max access via subscription (zero inference costs)
 - Note: Current `/api/chat` and `/api/agent` routes use mock implementations, real Claude Code integration requires `ANTHROPIC_API_KEY`
 
 **Why R2R for RAG?**
+
 - Hybrid search (vector + full-text) with RRF (Reciprocal Rank Fusion)
 - Knowledge graph with automatic entity extraction
 - Hatchet orchestration for async workflows
 - GraphRAG for complex reasoning across document collections
 
 **Why Next.js 15 App Router?**
+
 - Server Components minimize bundle size
 - Edge runtime for `/api/*` routes (sub-50ms cold starts)
 - Built-in streaming SSR for progressive hydration
@@ -80,6 +84,7 @@ lib/
 ### Critical Patterns
 
 **1. API Route Template (Edge Runtime)**
+
 ```typescript
 export const runtime = 'edge'
 export const maxDuration = 60  // For long-running R2R operations
@@ -101,6 +106,7 @@ export async function POST(req: Request) {
 ```
 
 **2. R2R Client Usage (Always Use Singleton)**
+
 ```typescript
 import { getR2RClient } from '@/lib/r2r/client'
 import { retryableR2RRequest } from '@/lib/r2r/retry'
@@ -114,6 +120,7 @@ const results = await retryableR2RRequest(() =>
 ```
 
 **3. Streaming Response Pattern**
+
 ```typescript
 // R2R streams are already in SSE format
 const response = await r2r.agent(message, config)
@@ -137,6 +144,7 @@ return new Response(result.toDataStream())
 ```
 
 **4. Type-Safe Configuration**
+
 ```typescript
 import { ragPresets } from '@/lib/config/r2r-config'
 import type { R2RAgentConfig } from '@/lib/types/r2r'
@@ -218,11 +226,13 @@ ragPresets.deepReasoning  // includes python_executor (sandboxed only!)
 ## ⛔️ Critical Anti-Patterns
 
 ❌ **NEVER enable `python_executor` without sandboxing**
+
 - Security risk: arbitrary code execution
 - Only use in isolated Docker containers
 - Default: disabled in all presets except `deepReasoning`
 
 ❌ **NEVER fetch R2R API directly from client-side**
+
 ```typescript
 // ❌ WRONG (exposes R2R_API_KEY, CORS issues)
 fetch('http://136.119.36.216:7272/v3/retrieval/search', ...)
@@ -232,6 +242,7 @@ fetch('/api/r2r/search', ...)
 ```
 
 ❌ **NEVER instantiate multiple R2RClient instances**
+
 ```typescript
 // ❌ WRONG (breaks auth state, token refresh)
 const r2r = new R2RClient()
@@ -242,6 +253,7 @@ const r2r = getR2RClient()
 ```
 
 ❌ **NEVER skip streaming for AI responses**
+
 ```typescript
 // ❌ WRONG (blocks, high latency, poor UX)
 const result = await generateText({ model, messages })
@@ -310,16 +322,22 @@ vercel --prod
 
 ## 📚 Documentation Map
 
-- **Quick Start**: `docs/SETUP.md`
-- **Architecture**: `docs/SYSTEM_OVERVIEW.md`
-- **API Reference**: `docs/API_REFERENCE.md`
-- **R2R Deep Dive**: `docs/R2R_COMPREHENSIVE_DOCUMENTATION.md` (1700+ lines)
-- **R2R Quick Config**: `docs/R2R_AGENT_CONFIG_GUIDE.md`
-- **Vercel AI SDK**: `docs/VERCEL_AI_ECOSYSTEM.md`
+**Root Directory:**
+- **Integration Status**: `INTEGRATION_SETUP.md` - checklist выполненных задач
+- **User Guide**: `README.md` - проектная документация
+
+**docs/ Directory:**
+- **Quick Start**: `docs/SETUP.md` - инструкция по установке
+- **Architecture**: `docs/SYSTEM_OVERVIEW.md` - системная архитектура
+- **API Reference**: `docs/API_REFERENCE.md` - справочник API endpoints
+- **R2R Deep Dive**: `docs/R2R_COMPREHENSIVE_DOCUMENTATION.md` (1700+ строк)
+- **R2R Quick Config**: `docs/R2R_AGENT_CONFIG_GUIDE.md` - конфигурация агентов
+- **Vercel AI SDK**: `docs/VERCEL_AI_ECOSYSTEM.md` - паттерны AI SDK
 
 ## 🐛 Troubleshooting
 
 **"Module not found" errors after update**
+
 ```bash
 rm -rf node_modules package-lock.json .next
 npm install
@@ -327,6 +345,7 @@ npm run build
 ```
 
 **"R2R connection failed"**
+
 ```bash
 # Check R2R health
 curl http://136.119.36.216:7272/v3/health
@@ -336,6 +355,7 @@ cat .env.local | grep R2R_BASE_URL
 ```
 
 **Type errors in strict mode**
+
 ```bash
 # Verify TypeScript config
 npx tsc --noEmit
@@ -349,6 +369,7 @@ cat tsconfig.json | grep paths
 ### Edge Runtime Constraints
 
 All `/api/*` routes use `export const runtime = 'edge'`:
+
 - Node.js APIs unavailable (fs, child_process, etc.)
 - Streaming required for long-running operations
 - Use `maxDuration` for operations >30s
@@ -364,6 +385,7 @@ import { R2RClient } from '../../../lib/r2r/client'  // ❌ Avoid relative paths
 ### Singleton Pattern for R2R
 
 `lib/r2r/client.ts` exports singleton to prevent:
+
 - Multiple auth token states
 - Redundant token refresh requests
 - Race conditions in parallel requests
