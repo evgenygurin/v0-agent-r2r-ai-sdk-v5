@@ -6,19 +6,22 @@ import { MonitoringDashboard } from '@/components/monitoring-dashboard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Activity, MessageSquare, Settings } from 'lucide-react'
-import BackgroundPaths from '@/components/background-paths'
+import { AgentStatusIndicator } from '@/components/agent-status-indicator'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('chat')
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <main className="relative flex h-full flex-col bg-background">
-      <BackgroundPaths />
       <header className="border-b border-border bg-card">
         <div className="flex h-16 items-center px-6">
           <div>
             <h1 className="text-xl font-semibold text-foreground">Chat</h1>
             <p className="text-xs text-muted-foreground">Claude Code + R2R Agent</p>
+          </div>
+          <div className="ml-auto">
+            <AgentStatusIndicator isLoading={isLoading} style={{ width: '30px', height: '30px' }} />
           </div>
         </div>
       </header>
@@ -43,7 +46,7 @@ export default function Home() {
           </div>
 
           <TabsContent value="chat" className="h-full p-0">
-            <ChatInterface />
+            <ChatInterface isLoading={isLoading} setIsLoading={setIsLoading} />
           </TabsContent>
 
           <TabsContent value="monitoring" className="h-full p-0">

@@ -11,6 +11,10 @@ export class R2RClient {
   constructor() {
     this.baseUrl = r2rConfig.baseUrl
     this.apiKey = r2rConfig.apiKey
+    // Authenticate if no API key is provided
+    if (!this.apiKey) {
+      this.authenticate()
+    }
   }
 
   private async getHeaders(): Promise<HeadersInit> {

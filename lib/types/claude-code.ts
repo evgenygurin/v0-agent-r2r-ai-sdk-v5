@@ -9,6 +9,7 @@ export interface ClaudeCodeConfig {
   topP?: number
   thinkingEnabled?: boolean
   extendedContext?: boolean
+  betas?: string[]
 }
 
 export const CLAUDE_CODE_MODELS = {

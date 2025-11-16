@@ -10,22 +10,23 @@ export const claudeConfig = {
 
 export const claudePresets: Record<string, ClaudeCodeConfig> = {
   fast: {
-    model: 'haiku',
+    model: 'claude-haiku-4-5-20251001',
     temperature: 0.5,
     maxTokens: 2048,
     thinkingEnabled: false,
   },
   balanced: {
-    model: 'sonnet',
+    model: 'claude-sonnet-4-5-20250929',
     temperature: 0.7,
     maxTokens: 4096,
     thinkingEnabled: true,
   },
   powerful: {
-    model: 'opus',
+    model: 'claude-opus-4-1-20250805',
     temperature: 0.8,
     maxTokens: 8192,
     thinkingEnabled: true,
     extendedContext: true,
+    betas: ['context-1m-2025-08-07'],
   },
 }

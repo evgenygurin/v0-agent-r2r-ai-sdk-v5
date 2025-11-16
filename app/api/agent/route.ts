@@ -2,7 +2,7 @@
 
 import { getR2RClient } from '@/lib/r2r/client'
 import { retryableR2RRequest } from '@/lib/r2r/retry'
-import { ragPresets } from '@/lib/config/r2r-config'
+import { ragPresets, r2rConfig } from '@/lib/config/r2r-config'
 import type { R2RAgentConfig } from '@/lib/types/r2r'
 
 export const runtime = 'edge'
@@ -10,14 +10,13 @@ export const maxDuration = 60
 
 export async function POST(req: Request) {
   try {
-    const {
-      messages,
-      conversationId,
-      useR2R = false,
-      r2rConfig,
-      preset,
-    } = await req.json()
-
+          const {
+            messages,
+            conversationId,
+            useR2R = false,
+            r2rConfig: requestR2rConfig, // Renamed to avoid shadowing
+            preset,
+          } = await req.json()
     if (!messages || !Array.isArray(messages)) {
       return Response.json(
         { error: 'Invalid messages format' },
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
     const lastMessage = messages[messages.length - 1].content
 
     // Use preset if provided
-    let finalR2RConfig: R2RAgentConfig | undefined = r2rConfig
+    let finalR2RConfig: R2RAgentConfig | undefined = requestR2rConfig
     if (preset && ragPresets[preset]) {
       finalR2RConfig = ragPresets[preset]
     }
