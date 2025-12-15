@@ -33,7 +33,7 @@ Entity deduplication identifies and merges duplicate entities within documents t
 
 ### API Usage
 
-\`\`\`python
+```python
 from r2r import R2RClient
 
 client = R2RClient("http://136.119.36.216:7272")
@@ -45,23 +45,23 @@ result = client.documents.deduplicate("20e29a97-c53c-506d-b89c-1f5346befc58")
 # - Number of duplicates found
 # - Entities merged
 # - Relationships updated
-\`\`\`
+```
 
-\`\`\`typescript
+```typescript
 // TypeScript/JavaScript
 const result = await client.documents.deduplicate(documentId)
-\`\`\`
+```
 
 **API Endpoint**: `POST /documents/{id}/deduplicate`
 
 ### Configuration
 
-\`\`\`toml
+```toml
 [deduplication]
 enabled = true
 technique = "exact_name"  # Current: exact_name
 min_similarity = 0.85     # For future semantic matching
-\`\`\`
+```
 
 ### Best Practices
 
@@ -104,58 +104,58 @@ Collections provide logical grouping for documents, enabling access control, con
 
 #### Create Collection
 
-\`\`\`python
+```python
 collection = client.collections.create(
     name="Technical Documentation",
     description="Product docs and API references",
 )
-\`\`\`
+```
 
-\`\`\`typescript
+```typescript
 const collection = await client.collections.create({
   name: 'Technical Documentation',
   description: 'Product docs and API references',
 })
-\`\`\`
+```
 
 **API**: `POST /collections`
 
 #### Get Collection Details
 
-\`\`\`python
+```python
 details = client.collections.get(collection_id)
-\`\`\`
+```
 
 **API**: `GET /collections/{id}`
 
 #### Update Collection
 
-\`\`\`python
+```python
 client.collections.update(
     collection_id,
     name="Updated Name",
     description="New description",
 )
-\`\`\`
+```
 
 **API**: `POST /collections/{id}`
 
 #### Delete Collection
 
-\`\`\`python
+```python
 client.collections.delete(collection_id)
-\`\`\`
+```
 
 **API**: `DELETE /collections/{id}`
 
 #### List Collections
 
-\`\`\`python
+```python
 collections = client.collections.list(
     offset=0,
     limit=100,
 )
-\`\`\`
+```
 
 **API**: `GET /collections`
 
@@ -163,36 +163,36 @@ collections = client.collections.list(
 
 #### Add User to Collection
 
-\`\`\`python
+```python
 client.collections.add_user(
     collection_id,
     user_id,
 )
-\`\`\`
+```
 
 **API**: `POST /collections/{id}/users/{user_id}`
 
 #### Remove User from Collection
 
-\`\`\`python
+```python
 client.collections.remove_user(collection_id, user_id)
-\`\`\`
+```
 
 **API**: `DELETE /collections/{id}/users/{user_id}`
 
 #### List Users in Collection
 
-\`\`\`python
+```python
 users = client.collections.list_users(collection_id)
-\`\`\`
+```
 
 **API**: `GET /collections/{id}/users`
 
 #### Get User's Collections
 
-\`\`\`python
+```python
 user_collections = client.collections.list_by_user(user_id)
-\`\`\`
+```
 
 **API**: `GET /users/{id}/collections`
 
@@ -200,37 +200,37 @@ user_collections = client.collections.list_by_user(user_id)
 
 #### Add Document to Collection
 
-\`\`\`python
+```python
 client.collections.add_document(collection_id, document_id)
-\`\`\`
+```
 
 **API**: `POST /collections/{id}/documents/{document_id}`
 
 #### Remove Document from Collection
 
-\`\`\`python
+```python
 client.collections.remove_document(collection_id, document_id)
-\`\`\`
+```
 
 **API**: `DELETE /collections/{id}/documents/{document_id}`
 
 #### List Documents in Collection
 
-\`\`\`python
+```python
 documents = client.collections.list_documents(
     collection_id,
     offset=0,
     limit=100,
 )
-\`\`\`
+```
 
 **API**: `GET /collections/{id}/documents`
 
 #### Get Document's Collections
 
-\`\`\`python
+```python
 collections = client.documents.list_collections(document_id)
-\`\`\`
+```
 
 **API**: `GET /documents/{id}/collections`
 
@@ -240,15 +240,15 @@ collections = client.documents.list_collections(document_id)
 
 Uses LLM to create synthetic description based on documents:
 
-\`\`\`python
+```python
 description = client.collections.generate_description(collection_id)
-\`\`\`
+```
 
 #### Collection Overview
 
 Get comprehensive statistics:
 
-\`\`\`python
+```python
 overview = client.collections.overview(collection_id)
 # Returns:
 # - Total documents
@@ -256,15 +256,15 @@ overview = client.collections.overview(collection_id)
 # - Entity count
 # - Relationship count
 # - User count
-\`\`\`
+```
 
 #### Extract Knowledge Graph
 
 Extract entities/relationships for all documents:
 
-\`\`\`python
+```python
 result = client.collections.extract(collection_id)
-\`\`\`
+```
 
 **API**: `POST /collections/{id}/extract`
 
@@ -276,13 +276,13 @@ result = client.collections.extract(collection_id)
 - **Public**: Optional public visibility
 
 **Security Model**:
-\`\`\`python
+```python
 # Users can only access collections they belong to
 results = client.retrieval.search(
     query="technical specs",
     filters={"collection_id": allowed_collection_id},
 )
-\`\`\`
+```
 
 ### Best Practices
 
@@ -318,67 +318,67 @@ Conversations maintain chat history and context for multi-turn interactions with
 
 #### Create Conversation
 
-\`\`\`python
+```python
 conversation = client.conversations.create()
-\`\`\`
+```
 
-\`\`\`typescript
+```typescript
 const conversation = await client.conversations.create()
-\`\`\`
+```
 
 **API**: `POST /conversations`
 
 #### Send Message in Conversation
 
-\`\`\`python
+```python
 response = client.retrieval.agent(
     message={"content": "What is the pricing model?"},
     conversation_id=conversation.id,
     mode="rag",
 )
-\`\`\`
+```
 
-\`\`\`typescript
+```typescript
 const response = await client.retrieval.agent({
   message: { content: 'What is the pricing model?' },
   conversationId: conversation.id,
   mode: 'rag',
 })
-\`\`\`
+```
 
 **API**: `POST /retrieval/agent`
 
 #### List Conversations
 
-\`\`\`python
+```python
 conversations = client.conversations.list(
     offset=0,
     limit=20,
 )
-\`\`\`
+```
 
 **API**: `GET /conversations`
 
 #### Get Conversation Details
 
-\`\`\`python
+```python
 details = client.conversations.get(conversation_id)
 # Returns message history and metadata
-\`\`\`
+```
 
 **API**: `GET /conversations/{id}`
 
 #### Delete Conversation
 
-\`\`\`python
+```python
 client.conversations.delete(conversation_id)
-\`\`\`
+```
 
 **API**: `DELETE /conversations/{id}`
 
 ### Message Structure
 
-\`\`\`python
+```python
 {
   "role": "user" | "assistant" | "system",
   "content": "message text",
@@ -388,7 +388,7 @@ client.conversations.delete(conversation_id)
     "citations": [...],
   }
 }
-\`\`\`
+```
 
 ### Context Management
 
@@ -400,7 +400,7 @@ client.conversations.delete(conversation_id)
 5. New message/response added to history
 
 **Context Window**:
-\`\`\`python
+```python
 # Configure context window size
 response = client.retrieval.agent(
     message={"content": query},
@@ -409,12 +409,12 @@ response = client.retrieval.agent(
         "max_context_messages": 10,  # Last 10 messages
     },
 )
-\`\`\`
+```
 
 ### Use Cases
 
 **Customer Support**:
-\`\`\`python
+```python
 # Initial question
 response1 = client.retrieval.agent(
     message={"content": "How do I reset my password?"},
@@ -426,10 +426,10 @@ response2 = client.retrieval.agent(
     message={"content": "What if I don't receive the email?"},
     conversation_id=conv_id,  # Same conversation
 )
-\`\`\`
+```
 
 **Research Sessions**:
-\`\`\`python
+```python
 # Multi-turn research
 conversation = client.conversations.create()
 
@@ -445,7 +445,7 @@ for topic in topics:
         conversation_id=conversation.id,
         mode="research",
     )
-\`\`\`
+```
 
 ### Best Practices
 
@@ -464,9 +464,9 @@ Documents are the central container for all ingested content in R2R, serving as 
 
 ### Document Lifecycle
 
-\`\`\`
+```
 Ingestion → Chunking → Embedding → Extraction → Deduplication → Enrichment
-\`\`\`
+```
 
 **Stages Explained**:
 1. **Ingestion**: File uploaded and parsed
@@ -478,7 +478,7 @@ Ingestion → Chunking → Embedding → Extraction → Deduplication → Enrich
 
 ### Document Properties
 
-\`\`\`python
+```python
 {
   "id": "uuid",
   "title": "Document Title",
@@ -494,13 +494,13 @@ Ingestion → Chunking → Embedding → Extraction → Deduplication → Enrich
   "created_at": "timestamp",
   "updated_at": "timestamp",
 }
-\`\`\`
+```
 
 ### CRUD Operations
 
 #### Ingest Document
 
-\`\`\`python
+```python
 # From file
 with open("document.pdf", "rb") as f:
     result = client.documents.create(
@@ -508,56 +508,56 @@ with open("document.pdf", "rb") as f:
         metadata={"source": "user_upload", "category": "technical"},
         collection_ids=[collection_id],
     )
-\`\`\`
+```
 
-\`\`\`typescript
+```typescript
 // From File object
 const formData = new FormData()
 formData.append('file', file)
 formData.append('metadata', JSON.stringify({ source: 'upload' }))
 
 const result = await client.documents.create(formData)
-\`\`\`
+```
 
 **API**: `POST /documents`
 
 #### List Documents
 
-\`\`\`python
+```python
 documents = client.documents.list(
     offset=0,
     limit=100,
     filters={"collection_id": collection_id},
 )
-\`\`\`
+```
 
 **API**: `GET /documents`
 
 #### Get Document Details
 
-\`\`\`python
+```python
 document = client.documents.get(document_id)
-\`\`\`
+```
 
 **API**: `GET /documents/{id}`
 
 #### Update Document Metadata
 
-\`\`\`python
+```python
 client.documents.update(
     document_id,
     metadata={"status": "reviewed", "version": "2.0"},
 )
-\`\`\`
+```
 
 **API**: `PATCH /documents/{id}`
 
 #### Delete Document
 
-\`\`\`python
+```python
 client.documents.delete(document_id)
 # Deletes document, chunks, entities, relationships
-\`\`\`
+```
 
 **API**: `DELETE /documents/{id}`
 
@@ -565,13 +565,13 @@ client.documents.delete(document_id)
 
 #### Extract Entities and Relationships
 
-\`\`\`python
+```python
 # Extract from single document
 result = client.documents.extract(document_id)
 
 # Extract from all documents in collection
 result = client.collections.extract(collection_id)
-\`\`\`
+```
 
 **API**: 
 - `POST /documents/{id}/extract`
@@ -585,7 +585,7 @@ result = client.collections.extract(collection_id)
 
 #### List Document Entities
 
-\`\`\`python
+```python
 entities = client.documents.list_entities(
     document_id,
     offset=0,
@@ -597,23 +597,23 @@ entities = client.documents.list_entities(
 # - embedding vector
 # - source chunks
 # - metadata
-\`\`\`
+```
 
 **API**: `GET /documents/{id}/entities`
 
 ### Chunking Strategies
 
 **Default Chunking**:
-\`\`\`toml
+```toml
 [chunking]
 method = "recursive"
 chunk_size = 512
 chunk_overlap = 50
 separators = ["\n\n", "\n", ". ", " "]
-\`\`\`
+```
 
 **Custom Chunking**:
-\`\`\`python
+```python
 result = client.documents.create(
     file=f,
     chunking_config={
@@ -622,7 +622,7 @@ result = client.documents.create(
         "chunk_overlap": 100,
     },
 )
-\`\`\`
+```
 
 **Chunking Methods**:
 - **Recursive**: Split by separators recursively
@@ -634,7 +634,7 @@ result = client.documents.create(
 
 Ingest already-chunked content:
 
-\`\`\`python
+```python
 chunks = [
     {"text": "First chunk content", "metadata": {"page": 1}},
     {"text": "Second chunk content", "metadata": {"page": 2}},
@@ -644,11 +644,11 @@ result = client.documents.create(
     chunks=chunks,
     metadata={"source": "preprocessed"},
 )
-\`\`\`
+```
 
 ### Document Status Tracking
 
-\`\`\`python
+```python
 # Check ingestion status
 document = client.documents.get(document_id)
 
@@ -658,7 +658,7 @@ elif document["status"] == "success":
     print("Ready for search!")
 elif document["status"] == "failed":
     print(f"Error: {document['error_message']}")
-\`\`\`
+```
 
 ### Best Practices
 
@@ -679,13 +679,13 @@ Knowledge graphs enable relationship-aware retrieval by mapping entities and the
 
 ### Architecture
 
-\`\`\`
+```
 Documents → Extraction → Entities + Relationships → Knowledge Graph
                                                    ↓
                                           Community Detection
                                                    ↓
                                               GraphRAG
-\`\`\`
+```
 
 ### Core Components
 
@@ -697,7 +697,7 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
 - Each has name, category, description, embedding
 
 **Entity Structure**:
-\`\`\`python
+```python
 {
   "id": "uuid",
   "name": "Entity Name",
@@ -707,7 +707,7 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
   "document_id": "source_document_uuid",
   "metadata": {...},
 }
-\`\`\`
+```
 
 #### Relationships
 
@@ -717,7 +717,7 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
 - Directional with strength scores
 
 **Relationship Structure**:
-\`\`\`python
+```python
 {
   "id": "uuid",
   "subject": "Entity A",
@@ -727,7 +727,7 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
   "strength": 0.85,  # Confidence score
   "document_id": "source_document_uuid",
 }
-\`\`\`
+```
 
 #### Communities
 
@@ -738,7 +738,7 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
 - LLM-generated summaries
 
 **Community Structure**:
-\`\`\`python
+```python
 {
   "id": "uuid",
   "level": 0,  # Hierarchy level
@@ -747,13 +747,13 @@ Documents → Extraction → Entities + Relationships → Knowledge Graph
   "entities": ["entity1_id", "entity2_id", ...],
   "size": 15,  # Number of entities
 }
-\`\`\`
+```
 
 ### API Operations
 
 #### Entity Management
 
-\`\`\`python
+```python
 # List entities
 entities = client.graphs.list_entities(
     collection_id=collection_id,
@@ -780,11 +780,11 @@ client.graphs.update_entity(
 
 # Delete entity
 client.graphs.delete_entity(entity_id)
-\`\`\`
+```
 
 #### Relationship Management
 
-\`\`\`python
+```python
 # List relationships
 relationships = client.graphs.list_relationships(
     collection_id=collection_id,
@@ -801,11 +801,11 @@ relationship = client.graphs.create_relationship(
 
 # Delete relationship
 client.graphs.delete_relationship(relationship_id)
-\`\`\`
+```
 
 #### Community Detection
 
-\`\`\`python
+```python
 # Build communities for collection
 result = client.graphs.build_communities(
     collection_id,
@@ -820,13 +820,13 @@ communities = client.graphs.list_communities(
 
 # Get community details
 community = client.graphs.get_community(community_id)
-\`\`\`
+```
 
 ### Knowledge Graph Workflow
 
 **Step-by-Step Guide**:
 
-\`\`\`python
+```python
 from r2r import R2RClient
 
 client = R2RClient("http://136.119.36.216:7272")
@@ -863,13 +863,13 @@ response = client.retrieval.rag(
         "use_communities": True,
     },
 )
-\`\`\`
+```
 
 ### Graph-Enhanced Search
 
 #### Vector + Graph Search
 
-\`\`\`python
+```python
 results = client.retrieval.search(
     query="company leadership",
     vector_search_settings={"limit": 20},
@@ -886,11 +886,11 @@ results = client.retrieval.search(
 # - Related entities
 # - Entity relationships
 # - Community context
-\`\`\`
+```
 
 #### GraphRAG
 
-\`\`\`python
+```python
 response = client.retrieval.rag(
     query="Explain the organizational structure",
     graph_rag_settings={
@@ -907,7 +907,7 @@ response = client.retrieval.rag(
 # - Relationship-aware context
 # - Multi-hop reasoning
 # - Community-level insights
-\`\`\`
+```
 
 ### Graph Synchronization
 
@@ -917,24 +917,24 @@ response = client.retrieval.rag(
 - Collection updates propagate to graph
 
 **Cross-Collection Updates**:
-\`\`\`python
+```python
 # Entity appears in multiple documents/collections
 # Updates sync across all instances
 client.graphs.update_entity(
     entity_id,
     description="Updated across all collections",
 )
-\`\`\`
+```
 
 ### Access Control
 
-\`\`\`python
+```python
 # Graph respects collection permissions
 # Users only see entities from their collections
 entities = client.graphs.list_entities(
     collection_id=user_collection_id,
 )
-\`\`\`
+```
 
 ### Best Practices
 
@@ -967,7 +967,7 @@ R2R includes preconfigured prompts:
 
 ### Prompt Structure
 
-\`\`\`python
+```python
 {
   "name": "technical_rag",
   "template": """
@@ -986,60 +986,60 @@ Provide a detailed technical response with code examples where applicable.
     "query": "string",
   },
 }
-\`\`\`
+```
 
 ### API Operations
 
 #### Add Prompt
 
-\`\`\`python
+```python
 prompt = client.prompts.add(
     name="custom_rag",
     template="Your custom template with {placeholders}",
     input_types={"context": "string", "query": "string"},
 )
-\`\`\`
+```
 
 **API**: `POST /prompts`
 
 #### Update Prompt
 
-\`\`\`python
+```python
 client.prompts.update(
     name="custom_rag",
     template="Updated template",
 )
-\`\`\`
+```
 
 **API**: `PATCH /prompts/{name}`
 
 #### Get Prompt
 
-\`\`\`python
+```python
 prompt = client.prompts.get("custom_rag")
-\`\`\`
+```
 
 **API**: `GET /prompts/{name}`
 
 #### List Prompts
 
-\`\`\`python
+```python
 prompts = client.prompts.list()
-\`\`\`
+```
 
 **API**: `GET /prompts`
 
 #### Delete Prompt
 
-\`\`\`python
+```python
 client.prompts.delete("custom_rag")
-\`\`\`
+```
 
 **API**: `DELETE /prompts/{name}`
 
 ### Using Custom Prompts
 
-\`\`\`python
+```python
 # Use in RAG
 response = client.retrieval.rag(
     query="How does authentication work?",
@@ -1055,13 +1055,13 @@ client.documents.extract(
         "entity_prompt": "custom_entity_extraction",
     },
 )
-\`\`\`
+```
 
 ### Prompt Templates
 
 #### RAG Prompt Template
 
-\`\`\`python
+```python
 template = """
 System: You are an AI assistant helping with {domain} questions.
 
@@ -1078,11 +1078,11 @@ Instructions:
 
 Answer:
 """
-\`\`\`
+```
 
 #### Entity Extraction Template
 
-\`\`\`python
+```python
 template = """
 Extract entities from the following text.
 
@@ -1096,7 +1096,7 @@ For each entity, provide:
 
 Format as JSON array.
 """
-\`\`\`
+```
 
 ### Best Practices
 
@@ -1117,7 +1117,7 @@ User management provides authentication, authorization, and access control for R
 ### Authentication Modes
 
 **JWT Token Authentication** (Recommended):
-\`\`\`python
+```python
 # Register user
 user = client.users.register(
     email="user@example.com",
@@ -1132,41 +1132,41 @@ tokens = client.users.login(
 
 # Access token for API calls
 # Refresh token for token renewal
-\`\`\`
+```
 
 **Supabase Integration** (Optional):
-\`\`\`toml
+```toml
 [auth]
 provider = "supabase"
 supabase_url = "https://xxx.supabase.co"
 supabase_anon_key = "xxx"
-\`\`\`
+```
 
 **Default Admin Mode** (Development):
-\`\`\`toml
+```toml
 [auth]
 require_authentication = false
 # Uses default admin credentials
-\`\`\`
+```
 
 ### User Operations
 
 #### Registration
 
-\`\`\`python
+```python
 user = client.users.register(
     email="user@example.com",
     password="SecurePass123!",
 )
 
 # Optional: Email verification
-\`\`\`
+```
 
 **API**: `POST /users/register`
 
 #### Login
 
-\`\`\`python
+```python
 tokens = client.users.login(
     email="user@example.com",
     password="SecurePass123!",
@@ -1177,62 +1177,62 @@ tokens = client.users.login(
 #   "access_token": "jwt_token",
 #   "refresh_token": "refresh_jwt",
 # }
-\`\`\`
+```
 
 **API**: `POST /users/login`
 
 #### Token Refresh
 
-\`\`\`python
+```python
 new_tokens = client.users.refresh_access_token()
-\`\`\`
+```
 
 **API**: `POST /users/refresh`
 
 #### Get User Profile
 
-\`\`\`python
+```python
 profile = client.users.me()
-\`\`\`
+```
 
 **API**: `GET /users/me`
 
 #### Update Profile
 
-\`\`\`python
+```python
 client.users.update(
     name="John Doe",
     bio="Data scientist",
     metadata={"department": "Engineering"},
 )
-\`\`\`
+```
 
 **API**: `PATCH /users/me`
 
 #### Change Password
 
-\`\`\`python
+```python
 client.users.change_password(
     current_password="OldPass123!",
     new_password="NewPass456!",
 )
-\`\`\`
+```
 
 **API**: `POST /users/change-password`
 
 #### Delete Account
 
-\`\`\`python
+```python
 client.users.delete()
-\`\`\`
+```
 
 **API**: `DELETE /users/me`
 
 #### Logout
 
-\`\`\`python
+```python
 client.users.logout()
-\`\`\`
+```
 
 **API**: `POST /users/logout`
 
@@ -1251,7 +1251,7 @@ client.users.logout()
 
 **Superuser Operations**:
 
-\`\`\`python
+```python
 # Admin login
 admin_client = R2RClient("http://136.119.36.216:7272")
 admin_client.users.login("admin@example.com", "admin_password")
@@ -1270,13 +1270,13 @@ admin_client.users.update_user(
 
 # Delete user
 admin_client.users.delete_user(user_id)
-\`\`\`
+```
 
 ### Access Control
 
 **Resource-Level Permissions**:
 
-\`\`\`python
+```python
 # Collections
 # - Owner: Full control
 # - Member: Read/search access
@@ -1291,7 +1291,7 @@ results = client.retrieval.search(
     query="confidential data",
     # Automatically filtered by user's permissions
 )
-\`\`\`
+```
 
 ### Security Considerations
 
@@ -1305,7 +1305,7 @@ results = client.retrieval.search(
 
 ### Configuration
 
-\`\`\`toml
+```toml
 [auth]
 provider = "r2r"  # or "supabase"
 require_authentication = true
@@ -1323,7 +1323,7 @@ require_uppercase = true
 require_lowercase = true
 require_digit = true
 require_special = true
-\`\`\`
+```
 
 ---
 
@@ -1332,7 +1332,7 @@ require_special = true
 ### Search
 
 **Vector Search**:
-\`\`\`python
+```python
 results = client.retrieval.search(
     query="machine learning algorithms",
     search_settings={
@@ -1340,10 +1340,10 @@ results = client.retrieval.search(
         "limit": 10,
     },
 )
-\`\`\`
+```
 
 **Hybrid Search**:
-\`\`\`python
+```python
 results = client.retrieval.search(
     query="API authentication",
     search_settings={
@@ -1351,10 +1351,10 @@ results = client.retrieval.search(
         "limit": 20,
     },
 )
-\`\`\`
+```
 
 **Graph-Enhanced Search**:
-\`\`\`python
+```python
 results = client.retrieval.search(
     query="company leadership",
     graph_search_settings={
@@ -1362,19 +1362,19 @@ results = client.retrieval.search(
         "include_entities": True,
     },
 )
-\`\`\`
+```
 
 ### RAG
 
 **Basic RAG**:
-\`\`\`python
+```python
 response = client.retrieval.rag(
     query="How does OAuth work?",
 )
-\`\`\`
+```
 
 **Streaming RAG**:
-\`\`\`python
+```python
 stream = client.retrieval.rag(
     query="Explain GraphRAG",
     rag_generation_config={"stream": True},
@@ -1382,10 +1382,10 @@ stream = client.retrieval.rag(
 
 for chunk in stream:
     print(chunk.delta, end="")
-\`\`\`
+```
 
 **Advanced RAG**:
-\`\`\`python
+```python
 response = client.retrieval.rag(
     query="API best practices",
     rag_generation_config={
@@ -1395,27 +1395,27 @@ response = client.retrieval.rag(
         "max_tokens": 2048,
     },
 )
-\`\`\`
+```
 
 ### Agent
 
 **RAG Agent**:
-\`\`\`python
+```python
 response = client.retrieval.agent(
     message={"content": "What are the security features?"},
     conversation_id=conversation_id,
     mode="rag",
 )
-\`\`\`
+```
 
 **Research Agent**:
-\`\`\`python
+```python
 response = client.retrieval.agent(
     message={"content": "Analyze the architecture"},
     mode="research",
     research_tools=["rag", "reasoning", "critique"],
 )
-\`\`\`
+```
 
 ---
 

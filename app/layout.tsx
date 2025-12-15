@@ -1,39 +1,23 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-// Temporarily disabled Analytics to debug build issue
-// import { Analytics } from '@vercel/analytics/next'
-import { Sidebar } from '@/components/layout/sidebar'
-import './globals.css'
+import type React from "react"
+import type { Metadata } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { Separator } from "@/components/ui/separator"
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbPage } from "@/components/ui/breadcrumb"
+import { CommandMenu } from "@/components/command-menu"
+import { Toaster } from "@/components/ui/toaster"
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-
-// Force dynamic rendering for all pages to prevent static generation errors
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
-export const revalidate = 0
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'Claude Code + R2R Integration',
-  description: 'AI Agent Platform powered by Claude Code SDK and R2R',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+  title: "R2R Research Agent - Vertex AI Gemini Pro 3.0",
+  description: "Advanced AI research agent with reasoning, critique, and tool usage",
+  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -42,16 +26,32 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        <div className="flex h-screen">
-          <div className="w-64">
-            <Sidebar />
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {children}
-          </div>
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>R2R Research Agent</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+                <div className="ml-auto">
+                  <CommandMenu />
+                </div>
+              </header>
+              <main className="flex flex-1 flex-col overflow-hidden">{children}</main>
+            </SidebarInset>
+          </SidebarProvider>
+          <Toaster />
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )

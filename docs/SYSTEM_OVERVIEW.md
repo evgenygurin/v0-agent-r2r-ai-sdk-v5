@@ -17,7 +17,7 @@ This document provides a comprehensive overview of the integration between Verce
 
 ### Component Architecture
 
-\`\`\`
+```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Client Application                        │
 │  (Next.js + React + Vercel AI SDK v5)                       │
@@ -42,7 +42,7 @@ This document provides a comprehensive overview of the integration between Verce
             │  Hatchet         │
             │  Orchestration   │
             └──────────────────┘
-\`\`\`
+```
 
 ### Integration Flow
 
@@ -67,7 +67,7 @@ This document provides a comprehensive overview of the integration between Verce
 - Tool calling for R2R integration
 
 **Configuration**:
-\`\`\`typescript
+```typescript
 import { claudeCode } from 'ai-sdk-provider-claude-code'
 
 const model = claudeCode('sonnet', {
@@ -76,7 +76,7 @@ const model = claudeCode('sonnet', {
   thinkingEnabled: true,
   extendedContext: true,
 })
-\`\`\`
+```
 
 ### 2. R2R Agent System
 
@@ -117,7 +117,7 @@ const model = claudeCode('sonnet', {
 
 **Documents** are the central container for all content in R2R:
 
-\`\`\`typescript
+```typescript
 // Ingest document
 const result = await client.documents.create({
   file: document,
@@ -130,7 +130,7 @@ await client.documents.extract(documentId)
 
 // Deduplicate entities
 await client.documents.deduplicate(documentId)
-\`\`\`
+```
 
 **Document Lifecycle**:
 1. **Ingestion** → File uploaded and parsed
@@ -144,7 +144,7 @@ await client.documents.deduplicate(documentId)
 
 **Collections** provide logical grouping and access control:
 
-\`\`\`typescript
+```typescript
 // Create collection
 const collection = await client.collections.create({
   name: 'Technical Documentation',
@@ -156,7 +156,7 @@ await client.collections.addDocument(collectionId, documentId)
 
 // Extract knowledge for all documents
 await client.collections.extract(collectionId)
-\`\`\`
+```
 
 **Use Cases**:
 - Multi-tenant data isolation
@@ -168,7 +168,7 @@ await client.collections.extract(collectionId)
 
 **Conversations** maintain chat history and context:
 
-\`\`\`typescript
+```typescript
 // Create conversation
 const conversation = await client.conversations.create()
 
@@ -181,7 +181,7 @@ const response = await client.retrieval.agent({
 
 // List conversation history
 const history = await client.conversations.list()
-\`\`\`
+```
 
 **Features**:
 - Persistent chat history
@@ -206,10 +206,10 @@ const history = await client.conversations.list()
 4. Redirect all relationships to merged entity
 5. Update embeddings
 
-\`\`\`typescript
+```typescript
 // Deduplicate document entities
 await client.documents.deduplicate(documentId)
-\`\`\`
+```
 
 ### Knowledge Graphs
 
@@ -222,7 +222,7 @@ await client.documents.deduplicate(documentId)
 - **Triples**: Subject-Predicate-Object relationships
 
 **Workflow**:
-\`\`\`typescript
+```typescript
 // 1. Extract entities and relationships
 await client.documents.extract(documentId)
 
@@ -237,7 +237,7 @@ const results = await client.retrieval.search({
     includeEntities: true,
   },
 })
-\`\`\`
+```
 
 **GraphRAG Benefits**:
 - Relationship-aware responses
@@ -249,7 +249,7 @@ const results = await client.retrieval.search({
 
 **Prompt Management** enables customization:
 
-\`\`\`typescript
+```typescript
 // Add custom prompt
 await client.prompts.add({
   name: 'technical_rag',
@@ -264,7 +264,7 @@ await client.retrieval.rag({
     promptName: 'technical_rag',
   },
 })
-\`\`\`
+```
 
 **Default Prompts**:
 - `default_rag`: Standard RAG responses
@@ -276,7 +276,7 @@ await client.retrieval.rag({
 
 **User Management** provides access control:
 
-\`\`\`typescript
+```typescript
 // Register user
 await client.users.register(email, password)
 
@@ -288,7 +288,7 @@ const results = await client.retrieval.search({
   query,
   filters: { userId: currentUserId },
 })
-\`\`\`
+```
 
 **Authentication Modes**:
 - JWT-based authentication
@@ -302,7 +302,7 @@ const results = await client.retrieval.search({
 
 Combines vector search (semantic) with keyword search (lexical):
 
-\`\`\`typescript
+```typescript
 const results = await client.retrieval.search({
   query: 'machine learning models',
   searchSettings: {
@@ -310,7 +310,7 @@ const results = await client.retrieval.search({
     limit: 20,
   },
 })
-\`\`\`
+```
 
 **How It Works**:
 1. Vector search finds semantically similar chunks
@@ -322,14 +322,14 @@ const results = await client.retrieval.search({
 
 Generates hypothetical answer, then searches:
 
-\`\`\`typescript
+```typescript
 const results = await client.retrieval.rag({
   query: 'How does OAuth work?',
   ragGenerationConfig: {
     useHyde: true,
   },
 })
-\`\`\`
+```
 
 **Process**:
 1. LLM generates hypothetical answer
@@ -341,7 +341,7 @@ const results = await client.retrieval.rag({
 
 Generates multiple query variations:
 
-\`\`\`typescript
+```typescript
 const results = await client.retrieval.rag({
   query: 'API authentication best practices',
   ragGenerationConfig: {
@@ -349,7 +349,7 @@ const results = await client.retrieval.rag({
     fusionQueries: 3,
   },
 })
-\`\`\`
+```
 
 **Process**:
 1. Generate 3-5 query variations
@@ -361,7 +361,7 @@ const results = await client.retrieval.rag({
 
 Multi-step reasoning with tool calling:
 
-\`\`\`typescript
+```typescript
 const response = await client.retrieval.agent({
   message: { content: query },
   mode: 'research',
@@ -370,7 +370,7 @@ const response = await client.retrieval.agent({
     stream: true,
   },
 })
-\`\`\`
+```
 
 **Research Tools**:
 - **rag**: Search knowledge base
@@ -382,7 +382,7 @@ const response = await client.retrieval.agent({
 
 ### Health Checks
 
-\`\`\`typescript
+```typescript
 // System health
 const health = await fetch('http://136.119.36.216:7272/v3/health')
 
@@ -392,7 +392,7 @@ const status = {
   postgres: await checkDatabaseHealth(),
   hatchet: await checkHatchetHealth(),
 }
-\`\`\`
+```
 
 ### Hatchet Dashboard
 
@@ -427,43 +427,43 @@ const status = {
 
 ### Caching Strategy
 
-\`\`\`typescript
+```typescript
 // Redis-based caching
 const cachedResult = await redis.get(cacheKey)
 if (cachedResult) return cachedResult
 
 const result = await r2rSearch(query)
 await redis.setex(cacheKey, 3600, JSON.stringify(result))
-\`\`\`
+```
 
 ### Connection Pooling
 
 Reuse R2R client connections:
 
-\`\`\`typescript
+```typescript
 const clientPool = new ConnectionPool({
   size: 5,
   baseUrl: process.env.R2R_BASE_URL,
 })
-\`\`\`
+```
 
 ### Request Batching
 
 Batch multiple operations:
 
-\`\`\`typescript
+```typescript
 const results = await Promise.all([
   client.retrieval.search({ query: q1 }),
   client.retrieval.search({ query: q2 }),
   client.retrieval.search({ query: q3 }),
 ])
-\`\`\`
+```
 
 ### Vector Indices
 
 Optimize large-scale search:
 
-\`\`\`typescript
+```typescript
 // Create HNSW index for fast vector search
 await client.system.createVectorIndex({
   collectionId,
@@ -471,7 +471,7 @@ await client.system.createVectorIndex({
   efConstruction: 200,
   m: 16,
 })
-\`\`\`
+```
 
 ## Security Considerations
 
@@ -507,7 +507,7 @@ await client.system.createVectorIndex({
 
 ### Environment Variables
 
-\`\`\`env
+```env
 # Claude Code
 ANTHROPIC_API_KEY=sk-ant-xxx
 
@@ -518,7 +518,7 @@ R2R_API_KEY=xxx
 # Optional: Authentication
 R2R_ADMIN_EMAIL=admin@example.com
 R2R_ADMIN_PASSWORD=xxx
-\`\`\`
+```
 
 ### Scaling Strategies
 
@@ -540,7 +540,7 @@ R2R_ADMIN_PASSWORD=xxx
 
 ### Monitoring Setup
 
-\`\`\`typescript
+```typescript
 // Application metrics
 const metrics = {
   requestLatency: histogram(),
@@ -551,7 +551,7 @@ const metrics = {
 
 // Export to monitoring service
 await exportMetrics(metrics)
-\`\`\`
+```
 
 ## Integration Patterns
 
@@ -559,7 +559,7 @@ await exportMetrics(metrics)
 
 Intelligent routing between Claude Code and R2R:
 
-\`\`\`typescript
+```typescript
 async function hybridAgent(query: string) {
   const intent = await classifyIntent(query)
   
@@ -571,13 +571,13 @@ async function hybridAgent(query: string) {
     return await claudeCodeAgent(query)
   }
 }
-\`\`\`
+```
 
 ### Fallback Pattern
 
 Graceful degradation when services fail:
 
-\`\`\`typescript
+```typescript
 async function resilientAgent(query: string) {
   try {
     return await r2rAgent(query)
@@ -586,13 +586,13 @@ async function resilientAgent(query: string) {
     return await claudeCodeAgent(query)
   }
 }
-\`\`\`
+```
 
 ### Streaming Pattern
 
 Real-time response updates:
 
-\`\`\`typescript
+```typescript
 const stream = await client.retrieval.agent({
   message: { content: query },
   ragGenerationConfig: { stream: true },
@@ -603,7 +603,7 @@ for await (const chunk of stream) {
     process(chunk.delta)
   }
 }
-\`\`\`
+```
 
 ## Troubleshooting Guide
 

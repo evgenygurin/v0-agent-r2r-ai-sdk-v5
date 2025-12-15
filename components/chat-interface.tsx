@@ -15,17 +15,13 @@ interface Message {
   content: string
 }
 
-interface ChatInterfaceProps {
-  isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
-}
-
-export function ChatInterface({ isLoading, setIsLoading }: ChatInterfaceProps) {
+export function ChatInterface() {
   const [showConfig, setShowConfig] = useState(false)
   const [useR2R, setUseR2R] = useState(false)
   const [preset, setPreset] = useState('balanced')
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {

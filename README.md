@@ -19,7 +19,7 @@ Full-stack AI agent platform integrating Vercel AI SDK v5, Claude Code SDK, and 
 
 ## Architecture
 
-\`\`\`
+```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Next.js Application                       │
 │  (Vercel AI SDK v5 + Claude Code Provider)                  │
@@ -42,7 +42,7 @@ Full-stack AI agent platform integrating Vercel AI SDK v5, Claude Code SDK, and 
                             │  Hatchet         │
                             │  Orchestration   │
                             └──────────────────┘
-\`\`\`
+```
 
 ## Deployment
 
@@ -67,15 +67,15 @@ Your project is live at:
 
 ### Installation
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ### Environment Variables
 
 Create `.env.local`:
 
-\`\`\`env
+```env
 # Claude Code SDK
 ANTHROPIC_API_KEY=sk-ant-xxx
 
@@ -86,13 +86,13 @@ R2R_API_KEY=your_r2r_api_key
 # Optional: R2R Authentication
 R2R_ADMIN_EMAIL=admin@example.com
 R2R_ADMIN_PASSWORD=your_password
-\`\`\`
+```
 
 ### Development
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
 Open [http://localhost:3000](http://localhost:3000)
 

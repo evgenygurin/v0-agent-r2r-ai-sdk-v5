@@ -1,7 +1,9 @@
 // R2R Client wrapper with authentication and error handling
 
-import { r2rConfig } from '../config/r2r-config'
-import type { R2RAgentConfig, R2RSearchSettings, R2RMessage } from '../types/r2r'
+import { r2rConfig } from '@/lib/config/r2r-config'
+import type { R2RAgentConfig, R2RSearchSettings, R2RMessage } from '@/lib/types/r2r'
+import { logger } from '@/lib/utils/logger'
+import { R2RError } from '@/lib/utils/errors'
 
 export class R2RClient {
   private baseUrl: string
@@ -11,13 +13,9 @@ export class R2RClient {
   constructor() {
     this.baseUrl = r2rConfig.baseUrl
     this.apiKey = r2rConfig.apiKey
-    // Authenticate if no API key is provided
-    if (!this.apiKey) {
-      this.authenticate()
-    }
   }
 
-  private async getHeaders(): Promise<HeadersInit> {
+  async getHeaders(): Promise<HeadersInit> {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     }
@@ -31,12 +29,16 @@ export class R2RClient {
     return headers
   }
 
+  getBaseUrl(): string {
+    return this.baseUrl
+  }
+
   async authenticate(email?: string, password?: string): Promise<void> {
     const authEmail = email || r2rConfig.adminEmail
     const authPassword = password || r2rConfig.adminPassword
 
     if (!authEmail || !authPassword) {
-      console.log('[v0] No authentication credentials provided, using default admin')
+      logger.info('No authentication credentials provided, using default admin')
       return
     }
 
@@ -51,15 +53,15 @@ export class R2RClient {
       })
 
       if (!response.ok) {
-        throw new Error(`Authentication failed: ${response.statusText}`)
+        throw new R2RError(`Authentication failed: ${response.statusText}`, response.status)
       }
 
       const data = await response.json()
       this.accessToken = data.results.access_token
 
-      console.log('[v0] R2R authentication successful')
+      logger.info('R2R authentication successful')
     } catch (error) {
-      console.error('[v0] R2R authentication error:', error)
+      logger.error('R2R authentication error', error as Error)
       throw error
     }
   }

@@ -6,13 +6,13 @@
 Direct Claude Code integration without R2R.
 
 **Request:**
-\`\`\`json
+```json
 {
   "messages": [
     { "role": "user", "content": "Hello!" }
   ]
 }
-\`\`\`
+```
 
 **Response:** Server-Sent Events stream
 
@@ -20,7 +20,7 @@ Direct Claude Code integration without R2R.
 Unified agent endpoint with R2R integration.
 
 **Request:**
-\`\`\`json
+```json
 {
   "messages": [
     { "role": "user", "content": "Search documents" }
@@ -32,7 +32,7 @@ Unified agent endpoint with R2R integration.
     "researchTools": ["rag", "reasoning"]
   }
 }
-\`\`\`
+```
 
 **Response:** Server-Sent Events stream
 
@@ -40,7 +40,7 @@ Unified agent endpoint with R2R integration.
 Health check for all services.
 
 **Response:**
-\`\`\`json
+```json
 [
   {
     "service": "r2r",
@@ -55,7 +55,7 @@ Health check for all services.
     "timestamp": "2025-01-15T..."
   }
 ]
-\`\`\`
+```
 
 ## Configuration Presets
 

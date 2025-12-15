@@ -15,17 +15,17 @@ This project integrates:
 
 ## Installation
 
-\`\`\`bash
+```bash
 npm install
 # or
 pnpm install
-\`\`\`
+```
 
 ## Environment Variables
 
 Create `.env.local` file:
 
-\`\`\`env
+```env
 # Claude Code SDK
 ANTHROPIC_API_KEY=sk-ant-xxx
 
@@ -36,7 +36,7 @@ R2R_API_KEY=your_r2r_api_key
 # Optional: R2R Authentication
 R2R_ADMIN_EMAIL=admin@example.com
 R2R_ADMIN_PASSWORD=your_password
-\`\`\`
+```
 
 ## Available Endpoints
 
@@ -64,7 +64,7 @@ R2R_ADMIN_PASSWORD=your_password
 
 ## Usage
 
-\`\`\`typescript
+```typescript
 // Using R2R Agent
 const response = await fetch('/api/agent', {
   method: 'POST',
@@ -82,7 +82,7 @@ const response = await fetch('/api/chat', {
     messages: [{ role: 'user', content: 'Your query' }],
   }),
 })
-\`\`\`
+```
 
 ## Monitoring
 
